@@ -1,10 +1,8 @@
-
 import time
 import logging
 import requests
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 from bs4 import BeautifulSoup
 
 
@@ -21,7 +19,7 @@ def get_product_details(product_card):
         return
 
 
-def datatronic():
+def get_data_datatronic():
     page_nmbr = 1
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
     product_nmbr = 1
@@ -33,7 +31,7 @@ def datatronic():
             soup = BeautifulSoup(html, "lxml")
             gpus = soup.find_all("article", class_="product-miniature js-product-miniature")
             page_not_found = soup.find("section", class_="page-content page-not-found")
-            if not page_not_found:
+            if not page_not_found and gpus:
                 for gpu_product_card in gpus:
                     gpu = get_product_details(gpu_product_card)
                     if gpu:
@@ -51,4 +49,4 @@ def datatronic():
 
 
 if __name__ == "__main__":
-    datatronic()
+    get_data_datatronic()

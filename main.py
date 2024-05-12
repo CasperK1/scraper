@@ -14,6 +14,6 @@ def scrape(driver):
         print(product.a.text)
 
 
-#if __name__ == "__main__":
+if __name__ == "__main__":
     driver = webdriver.Chrome()
     scrape(driver)
