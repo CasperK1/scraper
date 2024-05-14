@@ -1,6 +1,4 @@
-import time
 import logging
-from selenium import webdriver
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -43,13 +41,10 @@ def get_data_jimms(driver):
                     product_nmbr += 1
         else:
             logging.info('FINISHED. NOTHING FOUND.')
+            return
+
+        logging.info("FETCHED FROM JIMMS")
 
     except Exception as e:
         logging.error(f"An unexpected error occurred: {str(e)}")
 
-if __name__ == "__main__":
-    driver = webdriver.Chrome()
-    try:
-        get_data_jimms(driver)
-    finally:
-        driver.quit()

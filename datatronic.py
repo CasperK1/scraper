@@ -21,8 +21,8 @@ def get_product_details(product_card):
 
 def get_data_datatronic():
     page_nmbr = 1
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
     product_nmbr = 1
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
 
     while True:
         try:
@@ -38,15 +38,11 @@ def get_data_datatronic():
                         print(f"#{product_nmbr} Product Name: {gpu['name']}\nPrice: {gpu['price']}\n")
                         product_nmbr+=1
                 page_nmbr += 1
-                time.sleep(1) # polite delay :)
             else:
-                logging.info(f'FINISHED. NUMBER OF PAGES REQUESTED: {page_nmbr - 1}')
+                logging.info(f'FETCHED FROM DATATRONIC. NUMBER OF PAGES REQUESTED: {page_nmbr - 1}')
                 break
 
         except requests.exceptions.RequestException as e:
             print(f"ERROR: {str(e)}")
 
 
-
-if __name__ == "__main__":
-    get_data_datatronic()
