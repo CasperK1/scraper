@@ -1,8 +1,8 @@
 import time
 def timer(func):
-    def wrapper():
+    async def wrapper():
         start = time.time()
-        func()
+        await func()
         end = time.time() -start
-        print(f'{func.__name__}.py ran {round(end)} seconds')
+        print(f'{func.__name__}.py ran {end:.2f} seconds'.upper())
     return wrapper

@@ -1,33 +1,37 @@
 import logging
+import asyncio
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+from timer import timer
+
 from jimms import get_data_jimms
 from verkkokauppa import get_data_verkkokauppa
 from datatronic import get_data_datatronic
-from selenium import webdriver
-from timer import timer
+
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-
 @timer
-def main():
-    driver = webdriver.Chrome()
+async def main():
+    options = Options()
+    options.add_argument("--headless=new")
+    driver = webdriver.Chrome(options=options)
     try:
-        logging.info("Starting to fetch data from Jimms...")
-        get_data_jimms(driver)
-        if driver:
-            driver.quit()
-            logging.info("Web driver has been closed.")
-
-        logging.info("Starting to fetch data from Verkkokauppa...")
-        get_data_verkkokauppa()
-
-        logging.info("Starting to fetch data from Datatronic...")
-        get_data_datatronic()
+        # Run all tasks concurrently
+        await asyncio.gather(
+            asyncio.to_thread(get_data_jimms, driver), # Selenium does not support async
+            get_data_verkkokauppa(),
+            get_data_datatronic()
+        )
 
     except Exception as e:
         logging.error(f"An unexpected error occurred: {str(e)}")
 
+    finally:
+        driver.quit()
+
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
