@@ -18,8 +18,6 @@ def get_product_details(product_card, title_tag, title_class, product_tag, produ
             'price': product_price,
         }
         return gpu
-    else:
-        return
 
 
 def get_data_jimms(driver):

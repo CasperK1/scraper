@@ -10,8 +10,7 @@ def get_product_details(product_card):
         product_price = product_card.find("span", class_="price").text.strip()
         if product_title and "4090" in product_title:
             return {'name': product_title, 'price': product_price}
-        else:
-            return
+
 
 
 async def get_data_datatronic():
