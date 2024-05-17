@@ -2,18 +2,19 @@ import httpx
 import logging
 from bs4 import BeautifulSoup
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def get_product_details(product_card):
-        product_title = product_card.find("h3", class_="h3 product-title").text.strip()
-        product_price = product_card.find("span", class_="price").text.strip()
-        if product_title and "4090" in product_title:
-            return {'name': product_title, 'price': product_price}
+    product_title = product_card.find("h3", class_="h3 product-title").text.strip()
+    title_cleaned = ' '.join(product_title.replace('\n', '').split())
+    product_price = product_card.find("span", class_="price").text.strip()
+    price_formatted = product_price.replace('\xa0', '').replace('€', '').replace(',', '.')
+
+    if product_title and "4090" in product_title:
+        return {'name': title_cleaned, 'price': float(price_formatted)}
 
 
-
-async def get_data_datatronic():
+async def get_data_datatronic(db):
     page_nmbr = 1
     product_nmbr = 1
     headers = {
@@ -34,12 +35,14 @@ async def get_data_datatronic():
                     for gpu_product_card in gpus:
                         gpu = get_product_details(gpu_product_card)
                         if gpu:
-                            print(f"DATATRONIC #{product_nmbr} Product Name: {gpu['name']}\nPrice: {gpu['price']}\n")
+                            #print(f"DATATRONIC #{product_nmbr} Product Name: {gpu['name']}\nPrice: {gpu['price']}\n")
+                            db.insert("datatronic", gpu['name'], gpu['price'])
                             product_nmbr += 1
                     page_nmbr += 1
                 else:
                     logging.info(f'FETCHED FROM DATATRONIC. NUMBER OF PAGES REQUESTED: {page_nmbr - 1}')
-                    break
+                    return
+
 
         except httpx.HTTPStatusError as e:
             logging.error(f"HTTP error occurred: {str(e)}")
@@ -50,4 +53,3 @@ async def get_data_datatronic():
         except Exception as e:
             logging.error(f"An unexpected error occurred: {str(e)}")
             break
-

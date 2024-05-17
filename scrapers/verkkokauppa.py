@@ -1,22 +1,21 @@
 import httpx
 import logging
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 
 
 def get_product_details(product):
     if (product["availability"]["overrideText"] != "ei tiedossa"
             and product["availability"]["overrideText"] != "Ei vahvistettu"
             and product["availability"]["isPurchasable"] == True):
-        gpu = {
+
+        price_formatted = product['price']['currentFormatted'].replace('\xa0', '').replace(',', '.')
+        return {
             'name': product['name'],
-            'price': product['price']['currentFormatted'],
+            'price': float(price_formatted),
         }
-        return gpu
 
 
-async def get_data_verkkokauppa():
+async def get_data_verkkokauppa(db):
     url = "https://web-api.service.verkkokauppa.com/search?filter=category%3Agraphics_processors&private=true&sessionId=b5150716-01f9-4165-851f-46539ab92567&pageNo=0&pageSize=48&sort=price%3Aasc&lang=fi&query=rtx+4090"
     product_count = 1
     try:
@@ -31,7 +30,8 @@ async def get_data_verkkokauppa():
             for product in data['products']:
                 gpu = get_product_details(product)
                 if gpu:
-                    print(f"VERKKIS #{product_count} {gpu['name']} {gpu['price']}e\n")
+                    db.insert("verkkokauppa", gpu['name'], gpu['price'])
+                    #print(f"VERKKIS #{product_count} {gpu['name']} {gpu['price']}e\n")
                     product_count += 1
 
         logging.info("FETCHED FROM VERKKOKAUPPA")
@@ -42,4 +42,3 @@ async def get_data_verkkokauppa():
         logging.error(f"Request error occurred: {str(e)}")
     except Exception as e:
         logging.error(f"An unexpected error occurred: {str(e)}")
-
