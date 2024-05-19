@@ -1,4 +1,5 @@
 import logging
+from db.db_connect import database
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -24,20 +25,18 @@ def get_data_jimms(driver, db):
         product_div = soup.find_all('product-box')
 
         if product_div:
-            product_nmbr = 1
+            product_nmbr = 0
             for gpu_product_card in product_div:
                 gpu = get_product_details(gpu_product_card, 'a', 'text-reset text-decoration-none js-gtm-product-link',
                                           "span", "price__amount")
                 if gpu:
                     db.insert("jimms", gpu['name'], gpu['price'])
-                    # print(f"JIMMS #{product_nmbr} Product Name: {gpu['name']}\nPrice: {gpu['price']}\n")
                     product_nmbr += 1
         else:
             logging.error('FINISHED. NOTHING FOUND.')
             return
 
-        logging.info("FETCHED FROM JIMMS")
-
+        logging.info(f"FETCHED FROM JIMMS. NUMBER OF PRODUCTS: {product_nmbr}\n")
 
     except Exception as e:
         logging.error(f"An unexpected error occurred: {str(e)}")

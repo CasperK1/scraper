@@ -40,7 +40,8 @@ async def get_data_datatronic(db):
                             product_nmbr += 1
                     page_nmbr += 1
                 else:
-                    logging.info(f'FETCHED FROM DATATRONIC. NUMBER OF PAGES REQUESTED: {page_nmbr - 1}')
+                    logging.info(f'FETCHED FROM DATATRONIC. NUMBER OF PAGES REQUESTED: {page_nmbr - 1}. '
+                                 f'NUMBER OF PRODUCTS: {product_nmbr}\n')
                     return
 
 

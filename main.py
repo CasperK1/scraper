@@ -6,8 +6,8 @@ from db.db_connect import database
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-# TODO: implement aiosqlite, dont insert duplicates, compare identical product prices (EAN code?)
-# TODO: Frontend....
+# TODO 1: implement aiosqlite, dont insert duplicates,
+# TODO 2: compare identical product prices (EAN code?), Frontend....
 
 
 
@@ -20,7 +20,6 @@ async def main():
         try:
             # Run all tasks concurrently
             await asyncio.gather(
-                asyncio.to_thread(get_data_jimms, driver, db),  # to_thread = Selenium does not support async
                 get_data_verkkokauppa(db),
                 get_data_datatronic(db)
             )
@@ -29,6 +28,7 @@ async def main():
             logging.error(f"An unexpected error occurred: {str(e)}")
 
         finally:
+            get_data_jimms(driver, db) # sqlite3 doesn't support threading and selenium can't be run concurrently with asyncio
             driver.quit()
 
 

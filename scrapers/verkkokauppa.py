@@ -34,7 +34,7 @@ async def get_data_verkkokauppa(db):
                     #print(f"VERKKIS #{product_count} {gpu['name']} {gpu['price']}e\n")
                     product_count += 1
 
-        logging.info("FETCHED FROM VERKKOKAUPPA")
+        logging.info(f"FETCHED FROM VERKKOKAUPPA. NUMBER OF PRODUCTS: {product_count}\n")
 
     except httpx.HTTPStatusError as e:
         logging.error(f"HTTP error occurred: {str(e)}")
