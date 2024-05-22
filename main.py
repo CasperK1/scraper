@@ -6,11 +6,11 @@ from db.db_connect import database
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-# TODO 1: implement aiosqlite, dont insert duplicates,
+# TODO 1: implement aiosqlite
 # TODO 2: compare identical product prices (EAN code?), Frontend....
 
 
-
+# verkkokauppa and datatronic are using httpx and bs4, jimms is using selenium since it loads the page with js.
 @timer
 async def main():
     options = Options()  # Selenium boilerplate

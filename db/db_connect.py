@@ -21,10 +21,7 @@ class database:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        logging.info(f"Duplicate price from for product verkkokauppa: {self._duplicate_count['verkkokauppa']}.Not inserted to the db.")
-        logging.info(f"Duplicate price from for product datatronic: {self._duplicate_count['datatronic']}. Not inserted to the db.")
-        logging.info(f"Duplicate price for product from jimms: {self._duplicate_count['jimms']}. Not inserted to the db.")
-        self._duplicate_count = {"verkkokauppa": 0, "datatronic": 0, "jimms": 0}
+        logging.info(f"Duplicate price {self._duplicate_count}. Not inserted to the db.")
         self._conn.close()
 
     def insert(self, store, name, price):
@@ -38,15 +35,8 @@ class database:
             )
             count = cursor.fetchone()[0]
             if count > 0:
-                if store == "verkkokauppa":
-                    self._duplicate_count["verkkokauppa"] += 1
-                    return
-                elif store == "datatronic":
-                    self._duplicate_count["datatronic"] += 1
-                    return
-                else:
-                    self._duplicate_count["jimms"] += 1
-                    return
+                self._duplicate_count[store] += 1
+                return
 
             cursor.execute(
                 "INSERT INTO RTX4090 (store, name, price) VALUES (?, ?, ?)",
