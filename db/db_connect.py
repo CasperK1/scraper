@@ -21,7 +21,7 @@ class database:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        logging.info(f"Duplicate price {self._duplicate_count}. Not inserted to the db.")
+        logging.info(f"Duplicate prices {self._duplicate_count}.")
         self._conn.close()
 
     def insert(self, store, name, price):

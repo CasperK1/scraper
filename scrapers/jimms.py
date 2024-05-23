@@ -1,41 +1,43 @@
+import httpx
 import logging
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from bs4 import BeautifulSoup
 
 
-def get_product_details(product_card, title_tag, title_class, product_tag, product_class):
-    product_title = product_card.find(title_tag, class_=title_class).text.strip()
-    product_price = product_card.find(product_tag, class_=product_class).text.strip()
-    price_formatted = product_price.replace('\xa0', '').replace('€', '').replace(',', '.')
-    if product_title and "4090" in product_title:
-        return {'name': product_title, 'price': float(price_formatted)}
+def get_product_details(product):
+    if product['ProductGroupID'] == "000-213" and "4090" in product['Name']:
+        return {'name': product['Name'], 'price': product['PriceTax']}
 
 
-def get_data_jimms(driver, db):
+async def get_data_jimms(db):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+    product_nmbr = 0
     try:
-        driver.get("https://www.jimms.fi/fi/Product/Search?i=100&ob=4&q=rtx%204090&fg=000-1N0")
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'product-box'))
-        )
-        html = driver.page_source
-        soup = BeautifulSoup(html, 'lxml')
-        product_div = soup.find_all('product-box')
+        async with httpx.AsyncClient(headers=headers) as client:
+            response = await client.post(
+                'https://www.jimms.fi/api/product/newbetasearch?1716452629617',
+                json={"SearchQuery": "rtx 4090"}
+            )
+            data = response.json()
 
-        if product_div:
-            product_nmbr = 0
-            for gpu_product_card in product_div:
-                gpu = get_product_details(gpu_product_card, 'a', 'text-reset text-decoration-none js-gtm-product-link',
-                                          "span", "price__amount")
+            if 'Products' not in data:
+                logging.error("No products found in the response.")
+                return
+
+            for product in data['Products']:
+                gpu = get_product_details(product)
                 if gpu:
                     db.insert("jimms", gpu['name'], gpu['price'])
+                    #print(f"JIMMS #{product_nmbr} {gpu['name']} {gpu['price']}e\n")
                     product_nmbr += 1
-        else:
-            logging.error('FINISHED. NOTHING FOUND.')
-            return
 
         logging.info(f"FETCHED FROM JIMMS. NUMBER OF PRODUCTS: {product_nmbr}\n")
 
+
+    except httpx.HTTPStatusError as e:
+        logging.error(f"HTTP error occurred: {str(e)}")
+    except httpx.RequestError as e:
+        logging.error(f"Request error occurred: {str(e)}")
     except Exception as e:
         logging.error(f"An unexpected error occurred: {str(e)}")
+
+
