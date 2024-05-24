@@ -3,6 +3,5 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 from .verkkokauppa import get_data_verkkokauppa
 from .datatronic import get_data_datatronic
-#from .jimms import get_data_jimms
 from .jimms import get_data_jimms
 
