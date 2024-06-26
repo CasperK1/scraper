@@ -24,6 +24,7 @@ async def get_data_verkkokauppa(db):
     try:
         async with httpx.AsyncClient(headers=headers) as client:
             response = await client.get(url)
+            response.raise_for_status()
             data = response.json()
 
             if 'products' not in data:

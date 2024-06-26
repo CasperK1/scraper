@@ -7,7 +7,7 @@ class Database:
         self._conn = sqlite3.connect(db_path)
         self._cursor = self._conn.cursor()
         self._create_tables()
-        self._duplicate_count = {"verkkokauppa": 0, "datatronic": 0, "jimms": 0}
+        self._duplicate_count = {"verkkokauppa": 0, "datatronic": 0, "jimms": 0, "proshop": 0}
 
     def _create_tables(self):
         try:

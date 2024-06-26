@@ -17,6 +17,7 @@ async def get_data_jimms(db):
                 'https://www.jimms.fi/api/product/newbetasearch?1716452629617',
                 json={"SearchQuery": "rtx 4090"}
             )
+            response.raise_for_status()
             data = response.json()
 
             if 'Products' not in data:
