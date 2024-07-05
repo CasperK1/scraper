@@ -15,6 +15,8 @@ async def main():
     # options = Options()  # Selenium boilerplate
     # options.add_argument("--headless=new")
     # driver = webdriver.Chrome(options=options)
+    #x = input("Input 1: rtx 4090 prices\nInput 2: Wolt discounts\n")
+
     with Database("prices.db") as db:
         try:
             # Run all tasks concurrently
