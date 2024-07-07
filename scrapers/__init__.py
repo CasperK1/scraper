@@ -5,4 +5,4 @@ from .verkkokauppa import get_data_verkkokauppa
 from .datatronic import get_data_datatronic
 from .jimms import get_data_jimms
 from .proshop import get_data_proshop
-
+from .wolt_discounts import get_data_wolt
