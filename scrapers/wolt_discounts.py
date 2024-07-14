@@ -15,6 +15,22 @@ from bs4 import BeautifulSoup
 # TODO : Search by dish category, more data and frontend implementation
 
 
+
+def address_input(wait, address):
+    # TODO: Solve this without using time.sleep
+    # Accept cookies
+    cookie_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[contains(text(), "Accept")]')))
+    cookie_button.click()
+
+    # Input address
+    address_modal = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "sc-86837fd3-7")))
+    address_modal.click()
+    address_input = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "cb_Input_InputComponent_i1vu")))
+    address_input.send_keys(address)
+    wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "sc-3215ab1f-1.kFgRds"))).click()
+    time.sleep(2)
+    wait.until(EC.element_to_be_clickable((By.XPATH, '//div[contains(text(), "Continue")]'))).click()
+
 def get_data_wolt(driver, address):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
@@ -23,7 +39,6 @@ def get_data_wolt(driver, address):
         wait = WebDriverWait(driver, 5)
         logging.info("Wolt page loaded. Scrolling to bottom...\n")
 
-        # TODO: Solve this without using time.sleep
         address_input(wait, address)
 
         # Scroll to the bottom of the page
@@ -79,18 +94,5 @@ def get_data_wolt(driver, address):
         logging.error(f"An unexpected error occurred: {str(e)}")
 
 
-def address_input(wait, address):
-    # Accept cookies
-    cookie_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[contains(text(), "Accept")]')))
-    cookie_button.click()
-
-    # Input address
-    address_modal = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "sc-86837fd3-7")))
-    address_modal.click()
-    address_input = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "cb_Input_InputComponent_i1vu")))
-    address_input.send_keys(address)
-    wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "sc-3215ab1f-1.kFgRds"))).click()
-    time.sleep(2)
-    wait.until(EC.element_to_be_clickable((By.XPATH, '//div[contains(text(), "Continue")]'))).click()
 
 

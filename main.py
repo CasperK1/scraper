@@ -25,7 +25,6 @@ async def main():
                     get_data_datatronic(db),
                     get_data_jimms(db),
                     get_data_proshop(db)
-
                 )
 
             except Exception as e:
